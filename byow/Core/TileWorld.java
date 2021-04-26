@@ -38,7 +38,7 @@ public class TileWorld implements Serializable {
         TileWorld w = null;
         try {
             // Reading the object from a file
-            FileInputStream file = new FileInputStream("world");
+            FileInputStream file = new FileInputStream("world.txt");
             ObjectInputStream in = new ObjectInputStream(file);
 
             // Method for deserialization of object
@@ -124,7 +124,7 @@ public class TileWorld implements Serializable {
 
     public void serialize() {
         try {
-            FileOutputStream out = new FileOutputStream("world");
+            FileOutputStream out = new FileOutputStream("world.txt");
             ObjectOutputStream objOut = new ObjectOutputStream(out);
             objOut.writeObject(this);
             out.close();

@@ -120,7 +120,18 @@ public class Engine {
             case 'S':
                 world.player.move(3, world);
                 break;
+            case ':':
+                if (input.charAt(1) != 'q' && input.charAt(1) != 'Q') {
+                    break;
+                }
+                world.serialize();
+                return world;
+            case 'L':
+            case 'l':
+                world = TileWorld.externalize();
+                return interactWithInputStringHelper(input.substring(1), world);
         }
+
         makeTurns(world);
         return interactWithInputStringHelper(input.substring(1), world);
     }
