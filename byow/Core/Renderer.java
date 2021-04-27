@@ -7,21 +7,21 @@ import java.util.ArrayList;
 
 public class Renderer {
 
-    public TileWorld wrld;
-    public Room initSpace;
     public static TETile floorTile = Tileset.FLOOR;
     public static TETile wallTile = Tileset.WALL;
-    public static TETile entranceTile = Tileset.UNLOCKED_DOOR;
+    public TileWorld wrld;
+    public Room initSpace;
     public ArrayList<Room> rooms;
     public Player player;
     public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
 
     public Renderer(TileWorld world) {
+        setTiles();
         wrld = world;
         Room.roomNum = 0;
         ArrayList<Room> arr = new ArrayList<>();
-        initSpace = new Room(floorTile, wallTile, entranceTile);
+        initSpace = new Room(floorTile, wallTile, floorTile);
         ArrayList<Room> queue = new ArrayList<>();
         queue.add((Room) initSpace);
         int j = 0;
@@ -45,6 +45,36 @@ public class Renderer {
         removeExcessEntrancesFromWrld(arr);
         renderPlayer();
         renderEnemies();
+    }
+
+    private void setTiles() {
+        int rand = RectSpace.RANDOM.nextInt(6);
+        switch (rand) {
+            case (0):
+                floorTile = Tileset.FLOOR;
+                wallTile = Tileset.WALL;
+                break;
+            case (1):
+                floorTile = Tileset.GRASS;
+                wallTile = Tileset.FLOWER;
+                break;
+            case (2):
+                floorTile = Tileset.SAND;
+                wallTile = Tileset.TREE;
+                break;
+            case (3):
+                floorTile = Tileset.WATER;
+                wallTile = Tileset.MOUNTAIN;
+                break;
+            case (4):
+                floorTile = Tileset.SAND;
+                wallTile = Tileset.MOUNTAIN;
+                break;
+            case (5):
+                floorTile = Tileset.UNLOCKED_DOOR;
+                wallTile = Tileset.LOCKED_DOOR;
+                break;
+        }
     }
 
     private void renderPlayer() {
@@ -73,7 +103,7 @@ public class Renderer {
         if (room == null || currRoom == null || room.prevHallway == null || currRoom.prevHallway == null) {
             return false;
         }
-        return (currRoom.prevHallway.isOverlapping(room.prevHallway) || currRoom.isOverlapping(room) || currRoom.isOverlapping(room.prevHallway) || currRoom.prevHallway.isOverlapping(room));
+        return (currRoom.prevHallway.isOverlapping(room.prevHallway) || currRoom.isOverlapping(room) || currRoom.isOverlapping(room.prevHallway) || currRoom.prevHallway.isOverlapping(room) || currRoom.isInsideBounds());
     }
 
     private ArrayList<Integer[]> getExcessEntrancesFromWrld(ArrayList<Room> arr) {

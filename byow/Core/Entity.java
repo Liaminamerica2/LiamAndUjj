@@ -12,6 +12,9 @@ public class Entity implements Serializable {
     public int y;
     public TETile defaultTile = Tileset.NOTHING;
 
+    public int prevX;
+    public int prevY;
+
     public int health = 100;
 
     public Entity(int xx, int yy) {
@@ -42,11 +45,15 @@ public class Entity implements Serializable {
     }
 
     public void move(int xx, int yy) {
+        prevX = x;
+        prevY = y;
         x = xx;
         y = yy;
     }
 
     public void move(int dir) {
+        prevX = x;
+        prevY = y;
         switch (dir) {
             case (0):
                 x++;

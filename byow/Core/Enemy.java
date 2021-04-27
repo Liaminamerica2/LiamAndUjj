@@ -3,7 +3,8 @@ package byow.Core;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
-import java.util.ArrayList;
+import static byow.Core.Engine.HEIGHT;
+import static byow.Core.Engine.WIDTH;
 
 public class Enemy extends Entity {
 
@@ -20,9 +21,11 @@ public class Enemy extends Entity {
         dir = direction;
     }
 
-    public void move(int xx, int yy, int direction) {
-        super.move(xx, yy);
-        dir = direction;
+    public void move(int direction, TileWorld world) {
+        if (!availableDir(world).contains(dir)) {
+            return;
+        }
+        super.move(direction);
     }
 
     public void makeTurn(TileWorld wrld) {
@@ -30,13 +33,15 @@ public class Enemy extends Entity {
             dir += 2;
             dir %= 4;
         }
-        move(dir);
+        move(dir, wrld);
     }
 
     @Override
     public void draw(TETile[][] wrld) {
+        if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
+            return;
+        }
+        wrld[prevX][prevY] = RectSpace.floorTile;
         wrld[x][y] = defaultTile;
     }
-
-
 }

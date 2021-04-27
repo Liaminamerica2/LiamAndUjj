@@ -3,11 +3,11 @@ package byow.Core;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
-public class Player extends Entity{
+public class Player extends Entity {
 
     public TETile defaultTile = Tileset.AVATAR;
 
-    public int health = 100;
+    public int health = 3;
 
     public Player(int xx, int yy) {
         super(xx, yy);
@@ -18,6 +18,7 @@ public class Player extends Entity{
     }
 
     public void draw(TETile[][] wrld) {
+        wrld[prevX][prevY] = RectSpace.floorTile;
         wrld[x][y] = defaultTile;
     }
 

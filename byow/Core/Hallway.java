@@ -1,7 +1,6 @@
 package byow.Core;
 
 import byow.TileEngine.TETile;
-import byow.TileEngine.Tileset;
 
 public class Hallway extends RectSpace {
 

@@ -12,15 +12,15 @@ import static byow.Core.Engine.WIDTH;
 
 public class RectSpace {
 
+    public static Random RANDOM;
+    public static int maxRooms;
+    public static TETile floorTile = Tileset.FLOOR;
+    public static TETile wallTile = Tileset.WALL;
+    public static TETile entranceTile = Tileset.FLOOR;
     public int width;
     public int height;
     public int locX; //x location of the bottom left corner
     public int locY; //y location of the bottom left corner
-    public static Random RANDOM;
-    public static int maxRooms;
-    public TETile floorTile = Tileset.FLOOR;
-    public TETile wallTile = Tileset.WALL;
-    public TETile entranceTile = Tileset.UNLOCKED_DOOR;
 
     public RectSpace() {
         this(RANDOM.nextInt(WIDTH / 4) + 3 * WIDTH / 8, RANDOM.nextInt(HEIGHT / 4) + 3 * HEIGHT / 8);
@@ -40,6 +40,11 @@ public class RectSpace {
         height = h;
     }
 
+    public static void initRANDOM(long seed) {
+        RANDOM = new Random(seed);
+        maxRooms = RANDOM.nextInt(4) + 5;
+    }
+
     public boolean isOverlapping(RectSpace other) {
         return (new Rectangle(locX, locY, width, height)).intersects(new Rectangle(other.locX, other.locY, other.width, other.height));
     }
@@ -50,11 +55,6 @@ public class RectSpace {
                 wrld.setPoint(i, j, floorTile);
             }
         }
-    }
-
-    public static void initRANDOM(long seed) {
-        RANDOM = new Random(seed);
-        maxRooms = RANDOM.nextInt(4) + 5;
     }
 
     public Room addRoom(TileWorld wrld) {
@@ -70,5 +70,9 @@ public class RectSpace {
             return false;
         }
         return ((RectSpace) o).locX == locX && ((RectSpace) o).locY == locY && ((RectSpace) o).width == width && ((RectSpace) o).height == height;
+    }
+
+    public boolean isInsideBounds() {
+        return locX >= 0 || locY >= 0 || locX + width < WIDTH || locY + height < HEIGHT;
     }
 }

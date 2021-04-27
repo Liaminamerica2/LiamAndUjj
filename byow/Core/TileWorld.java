@@ -6,7 +6,6 @@ import byow.TileEngine.Tileset;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Random;
 
 import static byow.Core.Engine.HEIGHT;
 import static byow.Core.Engine.WIDTH;
@@ -16,10 +15,9 @@ import static byow.Core.Engine.WIDTH;
  */
 public class TileWorld implements Serializable {
 
-    private TETile[][] world;
-    private static Random RANDOM;
     public Player player;
     public ArrayList<Enemy> enemies = new ArrayList<>();
+    private TETile[][] world;
 
 
     public TileWorld() {
@@ -52,21 +50,33 @@ public class TileWorld implements Serializable {
         return w;
     }
 
+    public static void main(String[] args) {
+        TileWorld world = new TileWorld();
+        world.drawVerticalLine(0, 0, 5, Tileset.FLOWER);
+        world.serialize();
+        TERenderer ter = new TERenderer();
+        ter.initialize(WIDTH, HEIGHT);
+        ter.renderFrame(TileWorld.externalize().getTiles());
+    }
+
     /**
      * Sets the point at X,Y to TILE
      */
     public void setPoint(int x, int y, TETile tile) {
-        if (getTile(x, y) != null && !getTile(x, y).equals(Tileset.NOTHING)) {
-            try {
-                throw new Exception("illegal operation this is drawing over something else  " + x + "   " + y);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
+            return;
+        }
+        if (x == 0 || y == 0 || x == WIDTH - 1 || y == HEIGHT - 1) {
+            world[x][y] = RectSpace.wallTile;
+            return;
         }
         world[x][y] = tile;
     }
 
     public void clearTile(int x, int y) {
+        if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
+            return;
+        }
         world[x][y] = Tileset.NOTHING;
     }
 
@@ -75,7 +85,7 @@ public class TileWorld implements Serializable {
      */
     private void drawHorizontalLine(int x, int y, int length, TETile tile) {
         for (int i = 0; i < length; i++) {
-            world[x + i][y] = tile;
+            setPoint(x + i, y, tile);
         }
     }
 
@@ -84,7 +94,7 @@ public class TileWorld implements Serializable {
      */
     private void drawVerticalLine(int x, int y, int length, TETile tile) {
         for (int i = 0; i < length; i++) {
-            world[x][y + i] = tile;
+            setPoint(x, y + i, tile);
         }
     }
 
@@ -134,17 +144,10 @@ public class TileWorld implements Serializable {
         }
     }
 
-
-    public static void main(String[] args) {
-        TileWorld world = new TileWorld();
-        world.drawVerticalLine(0, 0, 5, Tileset.FLOWER);
-        world.serialize();
-        TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
-        ter.renderFrame(TileWorld.externalize().getTiles());
-    }
-
     public TETile getTile(int i, int j) {
+        if (i < 0 || j < 0 || i >= WIDTH || j >= HEIGHT) {
+            return null;
+        }
         return world[i][j];
     }
 
@@ -170,7 +173,10 @@ public class TileWorld implements Serializable {
     }
 
     public boolean isPosAvail(TileWorld wrld, int xx, int yy) {
-        return (wrld.getTile(xx, yy) == null || wrld.getTile(xx, yy).equals(Renderer.floorTile) || wrld.getTile(xx, yy).equals(Renderer.entranceTile));
+        if (xx >= WIDTH || yy >= HEIGHT || xx < 0 || yy < 0) {
+            return false;
+        }
+        return (wrld.getTile(xx, yy) == null || wrld.getTile(xx, yy).equals(Renderer.floorTile) || wrld.getTile(xx, yy).equals(Tileset.DEFAULT_ENEMY) || wrld.getTile(xx, yy).equals(Tileset.AVATAR));
     }
 
     public void setPlayer(Player player1) {
@@ -179,5 +185,14 @@ public class TileWorld implements Serializable {
 
     public void addEnemy(Enemy enemy) {
         enemies.add(enemy);
+    }
+
+    public boolean isPlayerDamage() {
+        for (Enemy i : enemies) {
+            if (i.x == player.x && i.y == player.y) {
+                return true;
+            }
+        }
+        return false;
     }
 }

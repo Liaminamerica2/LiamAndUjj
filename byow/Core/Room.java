@@ -3,7 +3,9 @@ package byow.Core;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Room extends RectSpace {
 
@@ -38,6 +40,40 @@ public class Room extends RectSpace {
         floorTile = floor;
         wallTile = wall;
         entranceTile = entrance;
+    }
+
+    public static int getXEnt(Entrance ent) {
+        return ent.x;
+    }
+
+    public static int getYEnt(Entrance ent) {
+        return ent.y;
+    }
+
+    public static int getDirEnt(Entrance ent) {
+        return ent.dir;
+    }
+
+    public static boolean isDrawn(Entrance ent) {
+        return ent.isDrawn;
+    }
+
+    public static void setDrawnTrue(Entrance ent) {
+        ent.isDrawn = true;
+    }
+
+    public static Integer[] locationOfHallway(Entrance ent) {
+        switch (ent.dir) {
+            case (0):
+                return new Integer[]{ent.x + 1, ent.y - 1};
+            case (1):
+                return new Integer[]{ent.x - 1, ent.y + 1};
+            case (2):
+            case (3):
+                return new Integer[]{ent.x - 1, ent.y - 1};
+            default:
+                return null;
+        }
     }
 
     private ArrayList<Entrance> generateEntrances() {
@@ -167,40 +203,6 @@ public class Room extends RectSpace {
             makeDoubleEntrance(ent);
         }
         return ent;
-    }
-
-    public static int getXEnt(Entrance ent) {
-        return ent.x;
-    }
-
-    public static int getYEnt(Entrance ent) {
-        return ent.y;
-    }
-
-    public static int getDirEnt(Entrance ent) {
-        return ent.dir;
-    }
-
-    public static boolean isDrawn(Entrance ent) {
-        return ent.isDrawn;
-    }
-
-    public static void setDrawnTrue(Entrance ent) {
-        ent.isDrawn = true;
-    }
-
-    public static Integer[] locationOfHallway(Entrance ent) {
-        switch (ent.dir) {
-            case (0):
-                return new Integer[]{ent.x + 1, ent.y - 1};
-            case (1):
-                return new Integer[]{ent.x - 1, ent.y + 1};
-            case (2):
-            case (3):
-                return new Integer[]{ent.x - 1, ent.y - 1};
-            default:
-                return null;
-        }
     }
 
     public Entrance getEntrance(int x, int y) {

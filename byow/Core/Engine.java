@@ -1,16 +1,22 @@
 package byow.Core;
 
-import byow.InputDemo.InputSource;
-import byow.InputDemo.KeyboardInputSource;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import edu.princeton.cs.introcs.StdDraw;
+
+import javax.sound.sampled.*;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 
 
 public class Engine {
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 80;
-    public static final int HEIGHT = 80;
+    public static final int WIDTH = 50;
+    public static final int HEIGHT = 50;
     public static long seed = 0;
+    private int i = 0;
 
 
     /**
@@ -27,24 +33,188 @@ public class Engine {
             Quit (Q)
             options, navigable by the keyboard, which are all case insensitive.
          */
-        InputSource inputSource;
-        inputSource = new KeyboardInputSource();
-
-        TileWorld world = new TileWorld(WIDTH, HEIGHT);
-        world.randomlyGenerateWold();
-
-        TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
-
-        while (inputSource.possibleNextInput()) {
-            char c = inputSource.getNextKey();
-
-            if (((Character) c).equals('q') || ((Character) c).equals('Q')) {
+        Clip background = playSound("Background.wav");
+        drawMenu();
+        TileWorld world = null;
+        boolean shouldBreak = false;
+        while (true) {
+            if (StdDraw.hasNextKeyTyped()) {
+                switch (StdDraw.nextKeyTyped()) {
+                    case 'N':
+                    case 'n':
+                        int i = 0;
+                        while (true) {
+                            boolean shouldBreak2 = false;
+                            if (StdDraw.hasNextKeyTyped()) {
+                                char c = StdDraw.nextKeyTyped();
+                                switch (c) {
+                                    case ('s'):
+                                    case ('S'):
+                                        shouldBreak2 = true;
+                                        shouldBreak = true;
+                                        break;
+                                    case ('0'):
+                                    case ('1'):
+                                    case ('2'):
+                                    case ('3'):
+                                    case ('4'):
+                                    case ('5'):
+                                    case ('6'):
+                                    case ('7'):
+                                    case ('8'):
+                                    case ('9'):
+                                        seed = seed * 10 + Integer.parseInt("" + c);
+                                        StdDraw.textLeft(.1 + ++i * .05, 9.0 / 16, "" + c);
+                                        break;
+                                }
+                            }
+                            if (shouldBreak2) {
+                                world = new TileWorld(WIDTH, HEIGHT);
+                                world.randomlyGenerateWold();
+                                world.getTiles();
+                                break;
+                            }
+                        }
+                        break;
+                    case ('L'):
+                    case ('l'):
+                        world = TileWorld.externalize();
+                        shouldBreak = true;
+                        break;
+                    default:
+                        world = null;
+                        break;
+                }
+            }
+            if (shouldBreak) {
                 break;
             }
-            world = interactWithKeyboardHelper(c, world);
-            ter.renderFrame(world.getTiles());
         }
+        background.stop();
+        TERenderer ter = new TERenderer();
+        ter.initialize(WIDTH, HEIGHT);
+        boolean isOver = false;
+        while (true) {
+            boolean maketurn = false;
+            if (StdDraw.hasNextKeyTyped()) {
+                switch (StdDraw.nextKeyTyped()) {
+                    case 'd':
+                    case 'D':
+                        world.player.move(0, world);
+                        maketurn = true;
+                        playSound("Move.wav");
+                        break;
+                    case 'w':
+                    case 'W':
+                        playSound("Move.wav");
+                        world.player.move(1, world);
+                        maketurn = true;
+                        break;
+                    case 'a':
+                    case 'A':
+                        playSound("Move.wav");
+                        world.player.move(2, world);
+                        maketurn = true;
+                        break;
+                    case 's':
+                    case 'S':
+                        world.player.move(3, world);
+                        playSound("Move.wav");
+                        maketurn = true;
+                        break;
+                    case 'q':
+                    case 'Q':
+                        world.serialize();
+                        return;
+                    default:
+                        break;
+                }
+            }
+            if (maketurn) {
+                makeTurns(world);
+                if (world.isPlayerDamage()) {
+                    world.player.health--;
+                    playSound("Damage.wav");
+                }
+                if (world.player.health <= 0) {
+                    isOver = true;
+                }
+            }
+            render(ter, world);
+            if (isOver) {
+                playSound("Over.wav");
+                break;
+            }
+        }
+        drawEndGame();
+    }
+
+    private void drawEndGame() {
+        StdDraw.clear();
+        StdDraw.setPenColor(Color.RED);
+        StdDraw.setFont(new Font("Arial", Font.BOLD, 50));
+        StdDraw.text(WIDTH / 2, HEIGHT / 2, "GAME OVER");
+        StdDraw.show();
+    }
+
+    public Clip playSound(String soundFile) {
+        File f = new File("sounds" + File.separator + soundFile);
+        AudioInputStream audioIn = null;
+        Clip clip = null;
+        try {
+            audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+            clip = AudioSystem.getClip();
+            clip.open(audioIn);
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+        clip.start();
+        return clip;
+    }
+
+    private void render(TERenderer renderer, TileWorld world) {
+        StdDraw.setFont();
+        renderer.renderFrame(world.getTiles());
+        drawUI(world);
+        try {
+            Thread.sleep(30);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void drawUI(TileWorld world) {
+        StdDraw.setPenColor(Color.WHITE);
+        StdDraw.setFont(new Font("Arial", Font.BOLD, 20));
+        if (world.getTile((int) StdDraw.mouseX(), (int) StdDraw.mouseY()) == null) {
+            return;
+        }
+        StdDraw.textLeft(0.35, HEIGHT - 1, world.getTile((int) StdDraw.mouseX(), (int) StdDraw.mouseY()).description());
+        String health = "";
+        for (int i = 0; i < world.player.health; i++) {
+            health += "♥";
+        }
+        StdDraw.setPenColor(Color.RED);
+        StdDraw.setFont(new Font("Arial", Font.BOLD, 30));
+        StdDraw.text(WIDTH / 2, HEIGHT - 1, health);
+        StdDraw.setPenColor(Color.white);
+        StdDraw.setFont(new Font("Arial", Font.BOLD, 20));
+        StdDraw.textRight(WIDTH, HEIGHT - 1, (new Date()).toString());
+        StdDraw.show();
+    }
+
+    private void drawMenu() {
+        StdDraw.setFont(new Font("Arial", Font.BOLD, 30));
+        StdDraw.setPenColor(Color.black);
+        StdDraw.text(.5, 3.0 / 4, "CS61B: THE GAME");
+        StdDraw.text(.5, 1.0 / 2, "New Game (N)");
+        StdDraw.text(.5, 6.0 / 16, "Load Game (L)");
+        StdDraw.text(.5, 4.0 / 16, "Quit (Q)");
+        StdDraw.show();
     }
 
     private TileWorld interactWithKeyboardHelper(char input, TileWorld world) {
@@ -131,6 +301,11 @@ public class Engine {
                 world = TileWorld.externalize();
                 return interactWithInputStringHelper(input.substring(1), world);
         }
+
+//        n7193300625454684331saaawasdaawdwsd  14
+//          == true
+//        n7193300625454684331saaawasdaawd:q 11
+//        lwsd 3
 
         makeTurns(world);
         return interactWithInputStringHelper(input.substring(1), world);
