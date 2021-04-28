@@ -258,9 +258,9 @@ public class Engine {
         TileWorld world = new TileWorld(WIDTH, HEIGHT);
 //        world.randomlyGenerateWold();
         TETile[][] ret = interactWithInputStringHelper(input, world).getTiles();
-        TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
-        ter.renderFrame(ret);
+//        TERenderer ter = new TERenderer();
+//        ter.initialize(WIDTH, HEIGHT);
+//        ter.renderFrame(ret);
         return world.getTiles();
     }
 
