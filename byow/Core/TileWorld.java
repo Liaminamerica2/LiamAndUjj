@@ -18,7 +18,8 @@ public class TileWorld implements Serializable {
     public Player player;
     public ArrayList<Enemy> enemies = new ArrayList<>();
     private TETile[][] world;
-
+    public TETile floorTile;
+    public TETile wallTile;
 
     public TileWorld() {
         world = new TETile[WIDTH][HEIGHT];
@@ -48,6 +49,16 @@ public class TileWorld implements Serializable {
             e.printStackTrace();
         }
         return w;
+    }
+
+    public void setTiles(TETile floor, TETile wall) {
+        floorTile = floor;
+        wallTile = wall;
+    }
+
+    public void setRectTiles() {
+        RectSpace.floorTile = floorTile;
+        RectSpace.wallTile = wallTile;
     }
 
     public static void main(String[] args) {
@@ -106,10 +117,10 @@ public class TileWorld implements Serializable {
     private TETile[][] addEntities() {
         TETile[][] tiles = world.clone();
         if (player != null) {
-            player.draw(tiles);
+            player.draw(this);
         }
         for (Enemy i : enemies) {
-            i.draw(tiles);
+            i.draw(this);
         }
         return tiles;
     }

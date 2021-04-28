@@ -1,13 +1,9 @@
 package byow.lab12;
-import edu.neu.ccs.util.Hex;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
-import java.util.Random;
 
 /**
  * Draws a world consisting of hexagonal regions.

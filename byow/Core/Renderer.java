@@ -19,6 +19,7 @@ public class Renderer {
     public Renderer(TileWorld world) {
         setTiles();
         wrld = world;
+        wrld.setTiles(floorTile, wallTile);
         Room.roomNum = 0;
         ArrayList<Room> arr = new ArrayList<>();
         initSpace = new Room(floorTile, wallTile, floorTile);

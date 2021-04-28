@@ -44,5 +44,6 @@
     <orderEntry type="library" name="Maven: CS61B:PNHucb-checkstyle.jar:1.0" level="project" />
     <orderEntry type="library" name="Maven: CS61B:PNHucb-f2007.jar:1.0" level="project" />
     <orderEntry type="library" name="Maven: CS61B:PNHucb.jar:1.0" level="project" />
+    <orderEntry type="library" name="algs4" level="project" />
   </component>
 </module>

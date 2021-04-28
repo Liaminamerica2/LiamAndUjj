@@ -36,12 +36,11 @@ public class Enemy extends Entity {
         move(dir, wrld);
     }
 
-    @Override
-    public void draw(TETile[][] wrld) {
+    public void draw(TileWorld wrld) {
         if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
             return;
         }
-        wrld[prevX][prevY] = RectSpace.floorTile;
-        wrld[x][y] = defaultTile;
+        wrld.setPoint(prevX, prevY, wrld.floorTile);
+        wrld.setPoint(x, y, defaultTile);
     }
 }

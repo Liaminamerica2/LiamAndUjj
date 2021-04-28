@@ -17,9 +17,9 @@ public class Player extends Entity {
         super(xx, yy, defTile);
     }
 
-    public void draw(TETile[][] wrld) {
-        wrld[prevX][prevY] = RectSpace.floorTile;
-        wrld[x][y] = defaultTile;
+    public void draw(TileWorld wrld) {
+        wrld.setPoint(prevX, prevY, wrld.floorTile);
+        wrld.setPoint(x, y, defaultTile);
     }
 
     public void move(int dir, TileWorld world) {

@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-
 public class Engine {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 50;
@@ -122,8 +121,14 @@ public class Engine {
                         playSound("Move.wav");
                         maketurn = true;
                         break;
-                    case 'q':
-                    case 'Q':
+                    case ':':
+                        if (StdDraw.hasNextKeyTyped()) {
+                            char c = StdDraw.nextKeyTyped();
+                            if (c == 'q' || c == 'Q') {
+                                world.serialize();
+                                System.exit(0);
+                            }
+                        }
                         world.serialize();
                         return;
                     default:
@@ -258,9 +263,6 @@ public class Engine {
         TileWorld world = new TileWorld(WIDTH, HEIGHT);
 //        world.randomlyGenerateWold();
         TETile[][] ret = interactWithInputStringHelper(input, world).getTiles();
-//        TERenderer ter = new TERenderer();
-//        ter.initialize(WIDTH, HEIGHT);
-//        ter.renderFrame(ret);
         return world.getTiles();
     }
 
@@ -299,6 +301,7 @@ public class Engine {
             case 'L':
             case 'l':
                 world = TileWorld.externalize();
+                world.setRectTiles();
                 return interactWithInputStringHelper(input.substring(1), world);
         }
 

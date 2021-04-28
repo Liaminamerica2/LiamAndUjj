@@ -1,7 +1,6 @@
 <component name="libraryTable">
-  <library name="Maven: CS61B:checkstyle-7.4-all.jar:7.4">
+  <library name="algs4">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../sp21-s1726/library-sp21/javalib/CS61B/checkstyle-7.4-all.jar/7.4/checkstyle-7.4-all.jar-7.4.jar!/" />
       <root url="jar://$PROJECT_DIR$/../library-sp21/javalib/algs4.jar!/" />
       <root url="jar://$PROJECT_DIR$/../library-sp21/javalib/hamcrest-core-1.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/../library-sp21/javalib/jh61b.jar!/" />
@@ -11,11 +10,8 @@
       <root url="jar://$PROJECT_DIR$/../library-sp21/javalib/ucb.jar!/" />
       <root url="jar://$PROJECT_DIR$/../library-sp21/javalib/xchart-3.5.1.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/../../sp21-s1726/library-sp21/javalib/CS61B/checkstyle-7.4-all.jar/7.4/checkstyle-7.4-all.jar-7.4-javadoc.jar!/" />
-    </JAVADOC>
+    <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/../../sp21-s1726/library-sp21/javalib/CS61B/checkstyle-7.4-all.jar/7.4/checkstyle-7.4-all.jar-7.4-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/../library-sp21/javalib/algs4.jar!/" />
       <root url="jar://$PROJECT_DIR$/../library-sp21/javalib/jh61b.jar!/" />
       <root url="jar://$PROJECT_DIR$/../library-sp21/javalib/stdlib-package.jar!/" />
